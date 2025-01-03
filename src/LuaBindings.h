@@ -19,4 +19,5 @@ class LuaBindings{
 
 	    static sol::state m_LuaState;
 	    static std::vector<std::unique_ptr<Bitmap>> m_Bitmaps;
+	    static std::vector<std::unique_ptr<Font>> m_Fonts;
 };
