@@ -7,11 +7,7 @@ local playerSize = 20
 
 local font1 = Font.new("resources/Pancake-xRGzm.ttf",false,false,false,18)
 
-if font1 == nil then
-    print("set_font is not available in Lua.")
-else
-    set_font(font1)
-end
+
 
 
 -- initialize items like window
@@ -23,7 +19,7 @@ end
 -- initialize game items before starting the game
 function game_start()
 --set player stuff here if you need ad textures etc
-set_font(font1)
+---set_font(font1)
 end
 
 function update()
