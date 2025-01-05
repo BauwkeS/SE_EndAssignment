@@ -131,3 +131,100 @@ function draw_line(x1,y1,x2,y2) end
 ---@return boolean
 function draw_rect(left,top,right,bottom) end
 
+--- function to draw a filled rect
+---@param left int # left rectangle coord
+---@param top int # top rect coord
+---@param right int # right rect coord
+---@param bottom int # bottom rect coord
+---@return boolean
+function fill_rect(left,top,right,bottom) end
+
+--- function to draw a filled rect with opacity
+--- includes optional opacity parameter in this function
+---@param left int # left rectangle coord
+---@param top int # top rect coord
+---@param right int # right rect coord
+---@param bottom int # bottom rect coord
+---@param opacity int # opacity level
+---@return boolean
+function fill_rect(left,top,right,bottom,opacity) end
+
+--- function to draw a rounded rect
+---@param left int # left rectangle coord
+---@param top int # top rect coord
+---@param right int # right rect coord
+---@param bottom int # bottom rect coord
+---@param radius int # the radius for the corners
+---@return boolean
+function draw_round_rect(left,top,right,bottom,radius) end
+
+--- function to draw a filled rounded rect
+---@param left int # left rectangle coord
+---@param top int # top rect coord
+---@param right int # right rect coord
+---@param bottom int # bottom rect coord
+---@param radius int # the radius for the corners
+---@return boolean
+function fill_round_rect(left,top,right,bottom,radius) end
+
+--- function to draw an oval
+---@param left int # left oval coord
+---@param top int # top oval coord
+---@param right int # right oval coord
+---@param bottom int # bottom oval coord
+---@return boolean
+function draw_oval(left,top,right,bottom) end
+
+--- function to draw a filled oval
+---@param left int # left oval coord
+---@param top int # top oval coord
+---@param right int # right oval coord
+---@param bottom int # bottom oval coord
+---@return boolean
+function fill_oval(left,top,right,bottom) end
+
+--- function to draw a filled oval with opacity
+--- includes optional opacity parameter
+---@param left int # left oval coord
+---@param top int # top oval coord
+---@param right int # right oval coord
+---@param bottom int # bottom oval coord
+---@param opacity int # opacity level
+---@return boolean
+function fill_oval(left,top,right,bottom, opacity) end
+
+--- function to draw an arc
+---@param left int # left arc coord
+---@param top int # top arc coord
+---@param right int # right arc coord
+---@param bottom int # bottom arc coord
+---@param start_degree int # the start degree number
+---@param angle int # the angle of the arc
+---@return boolean
+function draw_arc(left,top,right,bottom,start_degree,angle) end
+
+--- function to draw a filled arc
+---@param left int # left arc coord
+---@param top int # top arc coord
+---@param right int # right arc coord
+---@param bottom int # bottom arc coord
+---@param start_degree int # the start degree number
+---@param angle int # the angle of the arc
+---@return boolean
+function fill_arc(left,top,right,bottom,start_degree,angle) end
+
+--- function to draw text
+---@param text string # the text to show
+---@param left int # left text coord
+---@param top int # top text coord
+---@return int
+function draw_string(text,left,top,right,bottom) end
+
+--- function to draw text with extra position parameters
+---@param text string # the text to show
+---@param left int # left text coord
+---@param top int # top text coord
+---@param right int # right text coord
+---@param bottom int # bottom text coord
+---@return int
+function draw_string(text,left,top,right,bottom) end

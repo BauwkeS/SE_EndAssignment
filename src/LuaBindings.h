@@ -3,6 +3,8 @@
 #include <vector>
 #include "GameEngine.h"
 
+class Font;
+
 class LuaBindings{
 	public:
 	    static void InitializeStuff(GameEngine* pGameEngine);
@@ -19,5 +21,5 @@ class LuaBindings{
 
 	    static sol::state m_LuaState;
 	    static std::vector<std::unique_ptr<Bitmap>> m_Bitmaps;
-	    static std::vector<std::unique_ptr<Font>> m_Fonts;
+	    //static std::vector<std::unique_ptr<Font>> m_Fonts;
 };

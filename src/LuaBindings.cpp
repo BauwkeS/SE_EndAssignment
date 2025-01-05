@@ -5,7 +5,8 @@ std::vector <std::unique_ptr<Bitmap >> m_Bitmaps;
 
 void LuaBindings::InitializeStuff(GameEngine* pGameEngine)
 {
-	m_LuaState.open_libraries(sol::lib::base);
+	//m_LuaState.open_libraries(sol::lib::base);
+	luaL_openlibs(m_LuaState);
 
 	BindEngine(pGameEngine);
 	BindDraw(pGameEngine);
@@ -103,14 +104,14 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 		{
 			pGameEngine->SetColor(RGB(r, g, b));
 		});
-	m_LuaState.set_function("set_font", [pGameEngine](const std::wstring& fontName, bool bold, bool italic, bool underline, int size)
-		{
-			//make a new font and then save it and use it -> dont save it twice? => check
-			auto newFont{ std::make_unique<Font>(fontName,bold,italic,underline,size) };
-			pGameEngine->SetFont(newFont.get());
-			m_Fonts.emplace_back(std::move(newFont));
-		//do you NEED to save it??? check later!
-		});
+	//m_LuaState.set_function("set_font", [pGameEngine](const std::wstring& fontName, bool bold, bool italic, bool underline, int size)
+	//	{
+	//		//make a new font and then save it and use it -> dont save it twice? => check
+	//		auto newFont{ std::make_unique<Font>(fontName,bold,italic,underline,size) };
+	//		pGameEngine->SetFont(newFont.get());
+	//		m_Fonts.emplace_back(std::move(newFont));
+	//	//do you NEED to save it??? check later!
+	//	});
 	m_LuaState.set_function("fill_window_rect", [pGameEngine](const int& r, const int& g, const int& b)
 		{
 			return pGameEngine->FillWindowRect(RGB(r, g, b));
@@ -123,8 +124,61 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 		{
 			return pGameEngine->DrawLine(left,top,right,bottom);
 		});
-	//m_LuaState.set_function("fill_rect", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom)
-	//	{
-	//		return pGameEngine->DrawLine(left, top, right, bottom);
-	//	});
+	m_LuaState.set_function("fill_rect",
+		sol::overload(
+			[pGameEngine](const int& left, const int& top, const int& right, const int& bottom)
+			{
+				return pGameEngine->FillRect(left, top, right, bottom);
+			},
+			[pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& opacity)
+			{
+				return pGameEngine->FillRect(left, top, right, bottom, opacity);
+			}
+		)
+	);
+	m_LuaState.set_function("draw_round_rect", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& radius)
+		{
+			return pGameEngine->DrawRoundRect(left, top, right, bottom,radius);
+		});
+	m_LuaState.set_function("fill_round_rect", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& radius)
+		{
+			return pGameEngine->FillRoundRect(left, top, right, bottom, radius);
+		});
+	m_LuaState.set_function("draw_oval", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom)
+		{
+			return pGameEngine->DrawOval(left, top, right, bottom);
+		});
+	m_LuaState.set_function("fill_oval",
+		sol::overload(
+			[pGameEngine](const int& left, const int& top, const int& right, const int& bottom)
+			{
+				return pGameEngine->FillOval(left, top, right, bottom);
+			},
+			[pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& opacity)
+			{
+				return pGameEngine->FillOval(left, top, right, bottom, opacity);
+			}
+		)
+	);
+	m_LuaState.set_function("draw_arc", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& startDegree, const int& angle)
+		{
+			return pGameEngine->DrawArc(left, top, right, bottom, startDegree, angle);
+		});
+	m_LuaState.set_function("fill_arc", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom, const int& startDegree, const int& angle)
+		{
+			return pGameEngine->FillArc(left, top, right, bottom, startDegree, angle);
+		});
+	m_LuaState.set_function("draw_string",
+		sol::overload(
+			[pGameEngine](const std::wstring& text, const int& left, const int& top)
+			{
+				return pGameEngine->DrawString(text, left, top);
+			},
+			[pGameEngine](const std::wstring& text, const int& left, const int& top, const int& right, const int& bottom)
+			{
+				return pGameEngine->DrawString(text, left, top,right,bottom);
+			}
+		)
+	);
+
 }

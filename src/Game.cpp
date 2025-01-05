@@ -53,21 +53,33 @@ void Game::Initialize()
 void Game::Start()
 {
 	// Insert code that needs to execute (once) at the start of the game, after the game window is created
+
+	//lua stuff
+	LuaBindings::GameStart();
 }
 
 void Game::End()
 {
 	// Insert code that needs to execute when the game ends
+
+	//lua stuff
+	LuaBindings::GameEnd();
 }
 
 void Game::Paint(RECT rect) const
 {
-	// Insert paint code 
+	// Insert paint code
+
+	//lua stuff
+	LuaBindings::Draw();
 }
 
 void Game::Tick()
 {
-	// Insert non-paint code that needs to execute each tick 
+	// Insert non-paint code that needs to execute each tick
+
+	//lua stuff
+	LuaBindings::Update();
 }
 
 void Game::MouseButtonAction(bool isLeft, bool isDown, int x, int y, WPARAM wParam)
