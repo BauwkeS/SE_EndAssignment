@@ -33,7 +33,7 @@ void Game::Initialize()
 	//lua stuff
 	LuaBindings::InitializeStuff(GAME_ENGINE);
 	LuaBindings::Initialize();
-
+	
 	/*GAME_ENGINE->SetTitle(_T("Game Engine version 8_01"));	
 	
 	GAME_ENGINE->SetWidth(1024);

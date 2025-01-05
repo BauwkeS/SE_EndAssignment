@@ -10,6 +10,7 @@ void LuaBindings::InitializeStuff(GameEngine* pGameEngine)
 
 	BindEngine(pGameEngine);
 	BindDraw(pGameEngine);
+	BindClasses(pGameEngine);
 
 	LoadLuaScript("game1.lua");
 }
