@@ -78,7 +78,7 @@ function quit() end
 function is_full_screen() end
 
 --- function to check if a specific key is down
----@param v_key int # key number that wanted down
+---@param v_key char # key character that wanted down
 ---@return boolean
 function is_key_down(v_key) end
 

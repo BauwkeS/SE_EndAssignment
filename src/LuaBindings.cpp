@@ -88,7 +88,7 @@ void LuaBindings::BindEngine(GameEngine* pGameEngine)
 		{
 			return pGameEngine->IsFullscreen();
 		});
-	m_LuaState.set_function("is_key_down", [pGameEngine](const int& vKey)
+	m_LuaState.set_function("is_key_down", [pGameEngine](const char& vKey)
 		{
 			return pGameEngine->IsKeyDown(vKey);
 		});
@@ -122,7 +122,7 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 		});
 	m_LuaState.set_function("draw_rect", [pGameEngine](const int& left, const int& top, const int& right, const int& bottom)
 		{
-			return pGameEngine->DrawLine(left,top,right,bottom);
+			return pGameEngine->DrawRect(left,top,right,bottom);
 		});
 	m_LuaState.set_function("fill_rect",
 		sol::overload(

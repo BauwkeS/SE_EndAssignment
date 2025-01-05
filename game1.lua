@@ -18,22 +18,22 @@ end
 
 function update()
     if(is_key_down('W')) then
-        playerPosY = playerPosY + 1
+        playerPosY = playerPosY + 10
     end
     if(is_key_down('S')) then
-        playerPosY = playerPosY - 1
+        playerPosY = playerPosY - 10
     end
     if(is_key_down('D')) then
-        playerPosX = playerPosX + 1
+        playerPosX = playerPosX + 10
     end
     if(is_key_down('A')) then
-        playerPosX = playerPosX - 1
+        playerPosX = playerPosX - 10
     end
 end
 
 -- add all draw functions needed here
 function draw()
     fill_window_rect(0,0,0) --fill background first
-    set_color(1,0,0)
-    draw_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
+    set_color(255,0,0)
+    fill_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
 end
