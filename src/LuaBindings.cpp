@@ -107,11 +107,15 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 	//m_LuaState.set_function("set_font", [pGameEngine](const std::wstring& fontName, bool bold, bool italic, bool underline, int size)
 	//	{
 	//		//make a new font and then save it and use it -> dont save it twice? => check
-	//		auto newFont{ std::make_unique<Font>(fontName,bold,italic,underline,size) };
+	//		//auto newFont{ std::make_unique<Font>(fontName,bold,italic,underline,size) };
 	//		pGameEngine->SetFont(newFont.get());
-	//		m_Fonts.emplace_back(std::move(newFont));
+	//		//m_Fonts.emplace_back(std::move(newFont));
 	//	//do you NEED to save it??? check later!
 	//	});
+	m_LuaState.set_function("set_font", [pGameEngine](Font& font)
+		{
+			pGameEngine->SetFont(&font);
+		});
 	m_LuaState.set_function("fill_window_rect", [pGameEngine](const int& r, const int& g, const int& b)
 		{
 			return pGameEngine->FillWindowRect(RGB(r, g, b));
@@ -181,4 +185,14 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 		)
 	);
 
+}
+
+void LuaBindings::BindClasses(GameEngine* pGameEngine)
+{
+	//BIND FONT CLASS
+	m_LuaState.new_usertype<Font>
+	(
+		"Font",
+		sol::constructors<Font(tstring&,bool,bool,bool,int)>()
+	);
 }

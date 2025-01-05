@@ -18,6 +18,7 @@ class LuaBindings{
 	private:
 	    static void BindEngine(GameEngine* pGameEngine);
 	    static void BindDraw(GameEngine* pGameEngine);
+		static void BindClasses(GameEngine* pGameEngine);
 
 	    static sol::state m_LuaState;
 	    static std::vector<std::unique_ptr<Bitmap>> m_Bitmaps;

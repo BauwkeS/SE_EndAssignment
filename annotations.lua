@@ -100,13 +100,9 @@ function message_box(message) end
 function set_color(r,g,b) end
 
 --- function to set the font
----@param font_name string # name of the font
----@param bold boolean # is it in bold
----@param italic boolean # is it in italic
----@param underline boolean # is it underlined
----@param size int # size of the font
+---@param font Font # the font
 ---@return nil
-function set_font(font_name,bold,italic,underline,size) end
+function set_font(font) end
 
 --- function to set full window to a color
 ---@param r int # red value
@@ -218,7 +214,7 @@ function fill_arc(left,top,right,bottom,start_degree,angle) end
 ---@param left int # left text coord
 ---@param top int # top text coord
 ---@return int
-function draw_string(text,left,top,right,bottom) end
+function draw_string(text,left,top) end
 
 --- function to draw text with extra position parameters
 ---@param text string # the text to show
@@ -228,3 +224,26 @@ function draw_string(text,left,top,right,bottom) end
 ---@param bottom int # bottom text coord
 ---@return int
 function draw_string(text,left,top,right,bottom) end
+
+
+--- ||||||||||||||||||||||
+--- CLASSES BINDINGS
+--- ||||||||||||||||||||||
+
+-- exposing the Font class from C++
+--- @class Font
+--- @field font_name string # name of the font
+--- @field bold bool # value to see if the text is bold
+--- @field italic bool # value to see if the text is italic
+--- @field underline bool # value to see if the text is underlined
+--- @field size int # size of the font
+Font = {}
+
+--- Create a new Font instance
+--- @param font_name string # name of the font
+--- @param bold bool # value to see if the text is bold
+--- @param italic bool # value to see if the text is italic
+--- @param underline bool # value to see if the text is underlined
+--- @param size int # size of the font
+--- @return Font
+function Font.new(font_name,bold,italic,underline,size)
