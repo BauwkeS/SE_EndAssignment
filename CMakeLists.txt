@@ -13,8 +13,7 @@ project ("Lua_EndAssignment")
 
 LIST(APPEND LUA_SRC
 "game1.lua"
-"resources/Freedom.otf"
-"resources/Freedom.ttf"
+"resources/cat.png"
 )
 
 # Add source to this project's executable.

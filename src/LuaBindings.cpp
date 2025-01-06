@@ -101,9 +101,13 @@ void LuaBindings::BindEngine(GameEngine* pGameEngine)
 
 void LuaBindings::BindDraw(GameEngine* pGameEngine)
 {
-	m_LuaState.set_function("set_color", [pGameEngine](const int& r, const int& g, const int& b)
+	/*m_LuaState.set_function("set_color", [pGameEngine](const int& r, const int& g, const int& b)
 		{
 			pGameEngine->SetColor(RGB(r, g, b));
+		});*/
+	m_LuaState.set_function("set_color", [pGameEngine](const COLORREF& color)
+		{
+			pGameEngine->SetColor(color);
 		});
 	//m_LuaState.set_function("set_font", [pGameEngine](const std::wstring& fontName, bool bold, bool italic, bool underline, int size)
 	//	{
@@ -117,9 +121,9 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 		{
 			pGameEngine->SetFont(&font);
 		});
-	m_LuaState.set_function("fill_window_rect", [pGameEngine](const int& r, const int& g, const int& b)
+	m_LuaState.set_function("fill_window_rect", [pGameEngine](const COLORREF& color)
 		{
-			return pGameEngine->FillWindowRect(RGB(r, g, b));
+			return pGameEngine->FillWindowRect(color);
 		});
 	m_LuaState.set_function("draw_line", [pGameEngine](const int& x1, const int& y1, const int& x2, const int& y2)
 		{
@@ -185,6 +189,18 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 			}
 		)
 	);
+	m_LuaState.set_function("draw_bitmap",
+		sol::overload(
+			[pGameEngine](const Bitmap& bitmap, const int& left, const int& top)
+			{
+				return pGameEngine->DrawBitmap(&bitmap, left, top);
+			},
+			[pGameEngine](const Bitmap& bitmap, const int& left, const int& top, const int& right, RECT sourceRect)
+			{
+				return pGameEngine->DrawBitmap(&bitmap, left, top,sourceRect);
+			} // TO DOOOOOOOOOOOOOOOOOOOOOOOO
+		)
+	);
 
 }
 
@@ -195,5 +211,21 @@ void LuaBindings::BindClasses(GameEngine* pGameEngine)
 	(
 		"Font",
 		sol::constructors<Font(tstring&,bool,bool,bool,int)>()
+	);
+
+	//BIND BITMAP CLASS
+	m_LuaState.new_usertype<Bitmap>
+	(
+		"Bitmap",
+		sol::constructors<Bitmap(const tstring, bool = true)>(),
+		"set_transparency_color", &Bitmap::SetTransparencyColor,
+		"set_opacity", &Bitmap::SetOpacity,
+		"exists", &Bitmap::Exists,
+		"get_width", &Bitmap::GetWidth,
+		"get_height", &Bitmap::GetHeight,
+		"get_transparency_color", &Bitmap::GetTransparencyColor,
+		"get_opacity", &Bitmap::GetOpacity,
+		"has_alpha_channel", &Bitmap::HasAlphaChannel,
+		"save_to_file", &Bitmap::SaveToFile
 	);
 }

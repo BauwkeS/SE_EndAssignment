@@ -6,7 +6,7 @@ local playerPosY = 50
 local playerSize = 20
 
 local font1 = Font.new("resources/Pancake-xRGzm.ttf",false,false,false,18)
-
+local cat_bitmap = Bitmap.new("resources/cat.png",true)
 
 
 
@@ -43,4 +43,5 @@ function draw()
     set_color(255,0,0)
     fill_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
     draw_string("test",200,200)
+    draw_bitmap(cat_bitmap,300,300)
 end

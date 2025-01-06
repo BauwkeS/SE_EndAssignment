@@ -1,6 +1,17 @@
 --- @meta
 --- This file provides type annotations for Lua scripts interacting with C++ via SOL2.
 
+
+--- Creates a COLORREF value from RGB components
+--- @param r int # Red component (0-255)
+--- @param g int # Green component (0-255)
+--- @param b int # Blue component (0-255)
+--- @return number # COLORREF value (DWORD)
+function RGB(r, g, b)
+    return (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16)
+end
+
+
 --- ||||||||||||||||||||||
 --- BIND ENGINE FUNCTIONS
 --- ||||||||||||||||||||||
@@ -97,7 +108,7 @@ function message_box(message) end
 ---@param g int # green value
 ---@param b int # blue value
 ---@return nil
-function set_color(r,g,b) end
+function set_color(RGB(r,g,b)) end
 
 --- function to set the font
 ---@param font Font # the font
@@ -109,7 +120,7 @@ function set_font(font) end
 ---@param g int # green value
 ---@param b int # blue value
 ---@return boolean
-function fill_window_rect(r,g,b) end
+function fill_window_rect(RGB(r,g,b)) end
 
 --- function to draw a line
 ---@param x1 int # x1
@@ -225,6 +236,13 @@ function draw_string(text,left,top) end
 ---@return int
 function draw_string(text,left,top,right,bottom) end
 
+--- function to draw a bitmap
+---@param texture Bitmap # the text to show
+---@param left int # left text coord
+---@param top int # top text coord
+---@return bool
+function draw_bitmap(texture,left,top) end
+
 
 --- ||||||||||||||||||||||
 --- CLASSES BINDINGS
@@ -247,3 +265,55 @@ Font = {}
 --- @param size int # size of the font
 --- @return Font
 function Font.new(font_name,bold,italic,underline,size)
+
+-- exposing the Bitmap class from C++
+--- @class Bitmap
+--- @field file_name string # path to the texture file
+--- @field create_alpha_channel_true bool # do you need to create an alpha channel
+Bitmap = {}
+
+-- Create a new Bitmap instance
+--- @param file_name string # path to the texture file
+--- @param create_alpha_channel_true? bool # do you need to create an alpha channel
+function Bitmap.new(file_name,create_alpha_channel_true)
+
+--- Set the transparency color of a bitmap
+--- @param r int # r value
+--- @param g int # g value
+--- @param b int # b value
+--- @return nil
+function Bitmap:set_transparency_color(RGB(r,g,b)) end
+
+--- Set the opacity of a bitmap
+--- @param opacity int # opacity value from 0-100
+--- @return nil
+function Bitmap:set_opacity(opacity) end
+
+--- Checks if the bitmap exists
+--- @return bool
+function Bitmap:exists() end
+
+--- Returns the width of the bitmap
+--- @return int
+function Bitmap:get_width() end
+
+--- Returns the height of the bitmap
+--- @return int
+function Bitmap:get_height() end
+
+--- Returns the color of transparency
+--- @return number # COLORREF value (DWORD)
+function Bitmap:get_transparency_color() end
+
+--- Returns the opacity value/amount
+--- @return int
+function Bitmap:get_opacity() end
+
+--- Checks if bitmap has alpha channel
+--- @return bool
+function Bitmap:has_alpha_channel() end
+
+--- Saves the bitmap
+--- @param file_name string # name of the file
+--- @return bool
+function Bitmap:save_to_file(file_name) end
