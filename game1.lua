@@ -5,7 +5,7 @@ local playerPosX = 400
 local playerPosY = 50
 local playerSize = 20
 
-local font1 = Font.new("resources/Pancake-xRGzm.ttf",false,false,false,18)
+local font1 = Font.new("Freestyle Script",true,false,false,18)
 local cat_bitmap = Bitmap.new("resources/cat.png",true)
 
 
@@ -19,7 +19,7 @@ end
 -- initialize game items before starting the game
 function game_start()
 --set player stuff here if you need ad textures etc
----set_font(font1)
+set_font(font1)
 end
 
 function update()
@@ -40,8 +40,7 @@ end
 -- add all draw functions needed here
 function draw()
     fill_window_rect(0,0,0) --fill background first
-    set_color(255,0,0)
+    set_color(255,255,255)
     fill_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
     draw_string("test",200,200)
-    draw_bitmap(cat_bitmap,300,300)
 end

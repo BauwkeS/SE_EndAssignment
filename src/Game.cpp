@@ -30,8 +30,6 @@ void Game::Initialize()
 
 	AbstractGame::Initialize();
 	
-	Font fonth{ _T("resources/Freedom.ttf"), false, false, false, 18 };
-	GAME_ENGINE->SetFont(&fonth);
 	//lua stuff
 	LuaBindings::InitializeStuff(GAME_ENGINE);
 	LuaBindings::Initialize();
