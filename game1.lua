@@ -1,3 +1,11 @@
+
+--- Creates a COLORREF value from RGB components
+function RGB(r, g, b)
+    return (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16)
+end
+
+--- |||||||||||||||||||
+
 local window_width = 800
 local window_height = 500
 
@@ -19,7 +27,7 @@ end
 -- initialize game items before starting the game
 function game_start()
 --set player stuff here if you need ad textures etc
-set_font(font1)
+---set_font(font1)
 end
 
 function update()
@@ -39,8 +47,11 @@ end
 
 -- add all draw functions needed here
 function draw()
-    fill_window_rect(0,0,0) --fill background first
-    set_color(255,255,255)
+    fill_window_rect(RGB(0,0,0)) --fill background first
+
+    set_color(RGB(0,255,255))
+    draw_string("hello there", 100, 200)
+
+    set_color(RGB(255,255,255))
     fill_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
-    draw_string("test",200,200)
 end

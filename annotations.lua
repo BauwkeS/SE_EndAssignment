@@ -1,17 +1,6 @@
 --- @meta
 --- This file provides type annotations for Lua scripts interacting with C++ via SOL2.
 
-
---- Creates a COLORREF value from RGB components
---- @param r int # Red component (0-255)
---- @param g int # Green component (0-255)
---- @param b int # Blue component (0-255)
---- @return number # COLORREF value (DWORD)
-function RGB(r, g, b)
-    return (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16)
-end
-
-
 --- ||||||||||||||||||||||
 --- BIND ENGINE FUNCTIONS
 --- ||||||||||||||||||||||
@@ -103,12 +92,10 @@ function message_box(message) end
 --- BIND DRAW FUNCTIONS
 --- ||||||||||||||||||||||
 
---- function to set the color
----@param r int # red value
----@param g int # green value
----@param b int # blue value
----@return nil
-function set_color(RGB(r,g,b)) end
+--- Sets the drawing color
+--- @param color number # COLORREF value (DWORD)
+--- @return nil
+function set_color(color) end
 
 --- function to set the font
 ---@param font Font # the font
@@ -116,11 +103,9 @@ function set_color(RGB(r,g,b)) end
 function set_font(font) end
 
 --- function to set full window to a color
----@param r int # red value
----@param g int # green value
----@param b int # blue value
+---@param color number # COLORREF value (DWORD)
 ---@return boolean
-function fill_window_rect(RGB(r,g,b)) end
+function fill_window_rect(color) end
 
 --- function to draw a line
 ---@param x1 int # x1
@@ -278,11 +263,9 @@ Bitmap = {}
 function Bitmap.new(file_name,create_alpha_channel_true)
 
 --- Set the transparency color of a bitmap
---- @param r int # r value
---- @param g int # g value
---- @param b int # b value
+--- @param color number # COLORREF value (DWORD)
 --- @return nil
-function Bitmap:set_transparency_color(RGB(r,g,b)) end
+function Bitmap:set_transparency_color(color) end
 
 --- Set the opacity of a bitmap
 --- @param opacity int # opacity value from 0-100
