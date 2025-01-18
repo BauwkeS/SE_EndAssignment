@@ -101,22 +101,11 @@ void LuaBindings::BindEngine(GameEngine* pGameEngine)
 
 void LuaBindings::BindDraw(GameEngine* pGameEngine)
 {
-	/*m_LuaState.set_function("set_color", [pGameEngine](const int& r, const int& g, const int& b)
-		{
-			pGameEngine->SetColor(RGB(r, g, b));
-		});*/
+
 	m_LuaState.set_function("set_color", [pGameEngine](const COLORREF& color)
 		{
 			pGameEngine->SetColor(color);
 		});
-	//m_LuaState.set_function("set_font", [pGameEngine](const std::wstring& fontName, bool bold, bool italic, bool underline, int size)
-	//	{
-	//		//make a new font and then save it and use it -> dont save it twice? => check
-	//		//auto newFont{ std::make_unique<Font>(fontName,bold,italic,underline,size) };
-	//		pGameEngine->SetFont(newFont.get());
-	//		//m_Fonts.emplace_back(std::move(newFont));
-	//	//do you NEED to save it??? check later!
-	//	});
 	m_LuaState.set_function("set_font", [pGameEngine](Font& font)
 		{
 			pGameEngine->SetFont(&font);
