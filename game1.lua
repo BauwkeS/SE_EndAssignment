@@ -7,7 +7,7 @@ end
 
 --- |||||||||||||||||||
 
-local window_size = 500
+local window_size = 700
 help = "nope"
 
 local snake = Snake.new(0,math.floor(window_size/2),math.floor(window_size/2))
@@ -17,6 +17,8 @@ function initialize()
     set_window_title("Game 1 - testing snake")
     set_window_size(window_size,window_size)
     snake:init()
+    snake:add_segment()
+    snake:add_segment()
 end
 
 -- initialize game items before starting the game

@@ -21,6 +21,9 @@ Tile ={
         --if self.bitmap_info == string. "resources/snake_body.png" then
         --if (string.match(self.bitmap_info, "resources/snake_body.png")) then
         --testing = tostring(dir)
+        dir = math.floor(dir)
+        self.direction = dir
+
         if string.find(tostring(self.bitmap_info), "resources/snake_body.png") ~= nil then
             if (dir ==1 ) then -- left
                 self.source_x = tile_size * 5
@@ -43,12 +46,12 @@ Tile ={
             end
         end
 
-        self.direction = dir
+        
     end,
 
     new = function (self,bitmap_info, pos_x, pos_y)      
         local instance = {
-            direction = 4,
+        direction = 4,
         source_x = 0,
         source_y = 0,
         pos_x = pos_x or 0,
@@ -71,22 +74,21 @@ Tile ={
 -- uses segment class as parts 
 
 Snake = {
-    first_dir = 4,
+    -- Attributes
+    move_interval = 15,
     -- Methods
     new = function (self, x,y)
         --testing = tostring(bitmap_file[1])
         local instance = {
-        x = x or 0,
-        y = y or 0,
-        segments_num= 2, -- you start with only a tail and head
-        -- add head
-        head_tile = Tile:new(tostring(bitmap_file[1]),x,y),
-        -- add tail
-        tail_tile = Tile:new(tostring(bitmap_file[2]),x-tile_size,y),
+            move_timer=0,
+            segments_num= 2, -- you start with only a tail and head
+            -- add head
+            head_tile = Tile:new(tostring(bitmap_file[1]),x,y),
+            -- add tail
+            tail_tile = Tile:new(tostring(bitmap_file[2]),x-tile_size,y),
 
-        -- the full snake:
-        full_snake = {}
-
+            -- the full snake:
+            full_snake = {}
         }
 
         setmetatable(instance, { __index = Snake })
@@ -96,43 +98,39 @@ Snake = {
     end,
 
     move = function (self)
-        local addition = 1
-        --update the head
-        if (self.full_snake[1].direction ==1 ) then -- left
-            self.head_tile.pos_x = self.head_tile.pos_x - addition
-            for _, snake_part in ipairs(self.segments) do
-                snake_part.pos_x = snake_part.pos_x - addition
-            end
-            self.tail_tile.pos_x = self.tail_tile.pos_x - addition
 
-        elseif (self.full_snake[1].direction ==2 ) then -- down
-            
-            self.head_tile.pos_y = self.head_tile.pos_y + addition
-            for _, snake_part in ipairs(self.segments) do
-                snake_part.pos_y = snake_part.pos_y + addition
-            end
-            self.tail_tile.pos_y = self.tail_tile.pos_y + addition
+        self.move_timer = self.move_timer + 1
 
-        elseif (self.full_snake[1].direction ==3) then --up
+        -- Only move if the timer reaches the move interval
+        if self.move_timer > self.move_interval then
             
-            self.head_tile.pos_y = self.head_tile.pos_y - addition
-            for _, snake_part in ipairs(self.segments) do
-                snake_part.pos_y = snake_part.pos_y - addition
+            -- move each part of the snake starting from the tail
+            for i = #self.full_snake, 2, -1 do
+                self.full_snake[i].pos_x = self.full_snake[i - 1].pos_x
+                self.full_snake[i].pos_y = self.full_snake[i - 1].pos_y
             end
-            self.tail_tile.pos_y = self.tail_tile.pos_y - addition
 
-        elseif (self.full_snake[1].direction ==4 ) then --right
-            
-            -- get the new pos of the head
-            for _, snake_part in ipairs(self.full_snake) do
-                snake_part.pos_x = snake_part.pos_x + addition
+            -- Move the head based on its direction
+            local head = self.full_snake[1]
+            if head.direction == 1 then -- left
+                head.pos_x = head.pos_x - tile_size
+            elseif head.direction == 2 then -- down
+                head.pos_y = head.pos_y + tile_size
+            elseif head.direction == 3 then -- up
+                head.pos_y = head.pos_y - tile_size
+            elseif head.direction == 4 then -- right
+                head.pos_x = head.pos_x + tile_size
             end
-            -- give the old pos to the next one
-            
+
+            -- Reset the timer after moving
+            self.move_timer = 0
         end
     end,
 
-    change_direction = function (self, new_dir)
+    change_direction = function (self, new_dir) -- pas down the needed directions
+        for i = #self.full_snake, 2, -1 do
+            self.full_snake[i].direction = self.full_snake[i - 1].direction
+        end
         self.full_snake[1].direction = new_dir
     end,
 
@@ -145,16 +143,12 @@ Snake = {
 
     init = function (self)
         --testing = "self.direction: " .. tostring(self.direction)
-
-        self.head_tile:update_direction(self.first_dir)
-        self.tail_tile:update_direction(self.first_dir)
+        local first_dir = 4
+        self.head_tile:update_direction(first_dir)
+        self.tail_tile:update_direction(first_dir)
 
         -- make the full snake
-        -- add head
-        self.full_snake = {self.head_tile}
-
-        -- add tail
-        table.insert(self.full_snake, self.tail_tile)
+        self.full_snake = {self.head_tile, self.tail_tile}
 
     end,
 
@@ -178,7 +172,7 @@ Snake = {
         end
         
         table.insert(self.full_snake, old_tail)
-        testing = tostring(#self.full_snake)
+        --testing = tostring(#self.full_snake)
         
         self.segments_num = self.segments_num +1
         --last_x = self.segments[self.segments_num].pos_x
