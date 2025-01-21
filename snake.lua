@@ -13,7 +13,7 @@ Tile ={
     tile_size = 16,
 
     draw = function (self)
-        --testing = "you made it here ig"
+        --testing = tostring(self.source_x)
             draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, self.source_y,
             self.source_x + self.tile_size, self.source_y + self.tile_size)
         end,
@@ -21,7 +21,8 @@ Tile ={
     update_direction = function (self, dir)
         --if self.bitmap_info == string. "resources/snake_body.png" then
         --if (string.match(self.bitmap_info, "resources/snake_body.png")) then
-        if string.find(self.bitmap_info, "resources/snake_body.png") ~= nil then
+        --testing = tostring(dir)
+        if string.find(tostring(self.bitmap_info), "resources/snake_body.png") ~= nil then
             if (dir ==1 ) then -- left
                 self.source_x = self.tile_size * 5
             elseif (dir ==2 ) then -- down
@@ -42,13 +43,10 @@ Tile ={
                 self.source_x = self.tile_size * 3
             end
         end
-        self.direction = dir
     end,
 
-    new = function (self,bitmap_info, direction, pos_x, pos_y)      
-        testing = bitmap_info  
+    new = function (self,bitmap_info, pos_x, pos_y)      
         local instance = {
-        direction = direction or 1,
         source_x = 0,
         source_y = 0,
         pos_x = pos_x or 0,
@@ -71,7 +69,7 @@ Snake = {
 
     -- Methods
     new = function (self, x,y,direction,segments_num)
-        testing = tostring(bitmap_file[1])
+        --testing = tostring(bitmap_file[1])
         local instance = {
         x = x or 0,
         y = y or 0,
@@ -80,7 +78,7 @@ Snake = {
         grow_segments = 0,
         segments_num= segments_num,
         -- add head
-        head_tile = Tile:new(tostring(bitmap_file[1]), direction,x,y)
+        head_tile = Tile:new(tostring(bitmap_file[1]),x,y)
         }
         setmetatable(instance, { __index = Snake })
         --testing = tostring(bitmap_file[1])
@@ -105,6 +103,7 @@ Snake = {
     end,
 
     init = function (self)
-        self.head_tile:update_direction()
+        --testing = "self.direction: " .. tostring(self.direction)
+        self.head_tile:update_direction(self.direction)
     end
 }
