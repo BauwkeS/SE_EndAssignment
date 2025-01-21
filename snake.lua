@@ -10,7 +10,7 @@ local bitmap_file = {
     "resources/apple.png"
 }
 Tile ={
-    tile_size = 64,
+    tile_size = 16,
 
     draw = function (self)
         --testing = "you made it here ig"
