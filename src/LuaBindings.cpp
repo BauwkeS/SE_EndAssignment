@@ -184,10 +184,10 @@ void LuaBindings::BindDraw(GameEngine* pGameEngine)
 			{
 				return pGameEngine->DrawBitmap(&bitmap, left, top);
 			},
-			[pGameEngine](const Bitmap& bitmap, const int& left, const int& top, const int& right, RECT sourceRect)
+			[pGameEngine](const Bitmap& bitmap, const int& left, const int& top, const int& rectLeft, const int& rectTop, const int& rectRight, const int& rectBottom)
 			{
-				return pGameEngine->DrawBitmap(&bitmap, left, top,sourceRect);
-			} // TO DOOOOOOOOOOOOOOOOOOOOOOOO
+				return pGameEngine->DrawBitmap(&bitmap, left, top, { rectLeft,rectTop,rectRight,rectBottom });
+			}
 		)
 	);
 

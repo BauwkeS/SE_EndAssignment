@@ -228,6 +228,16 @@ function draw_string(text,left,top,right,bottom) end
 ---@return bool
 function draw_bitmap(texture,left,top) end
 
+--- function to draw a bitmap with a source rect
+---@param texture Bitmap # the text to show
+---@param left int # left text coord
+---@param top int # top text coord
+---@param r_left int # left text coord
+---@param r_top int # top text coord
+---@param r_right int # right text coord
+---@param r_bottom int # bottom text coord
+---@return bool
+function draw_bitmap(texture,left,top, r_left, r_top, r_right, r_bottom) end
 
 --- ||||||||||||||||||||||
 --- CLASSES BINDINGS

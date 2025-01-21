@@ -1,11 +1,21 @@
 -- game variables
 local GAME_SIZE = 500
-local level = {
-    tile_width = 32, 
-    tile_height = 32 
-}
+local testing = "hell nah"
 -- make a mapping for the picture
 -- first number is for the x value and second for y 
+
+local Tile ={
+    source_x = 0,
+    source_y = 0,
+    type = Bitmap,
+    tile_size = 64,
+
+    draw = function (self, pos_x, pos_y)
+            draw_bitmap(self.bitmap, pos_x, pos_y, self.source_x, self.source_y,
+            self.source_x + self.tile_size, self.source_y + self.tile_size)
+        end
+}
+
 local TileManager = {
     -- Attributes
     direction_map = {
@@ -30,7 +40,9 @@ local TileManager = {
             ["0,1|1,0"] = {0, 0}  -- Angle Down-Right
         }
     },
-
+    tile_width = 32, 
+    tile_height = 32 ,
+    
     -- Methods
     compute_direction_key = function (dx,dy)
         return string.format("%d,%d", dx, dy)
@@ -57,8 +69,11 @@ local TileManager = {
     end,
 
     get_screen_position = function (x,y)
-        local left = x * level.tile_width
-        local top = y * level.tile_height
+        testing = "hello???"
+        --draw_string(testing, 200, 400)
+        draw_string(tostring(x), 200, 400)
+        local left = x * TileManager.tile_width
+        local top = y * TileManager.tile_height
         return left, top
     end,
 
@@ -103,7 +118,7 @@ local Segment = {
 -- Snake class
 -- uses segment class as parts 
 
-local Snake = {
+Snake = {
     -- Attributes
     directions = {
         {0, -1}, -- Up
@@ -113,18 +128,16 @@ local Snake = {
     },
 
     -- Methods
-    new = function (self,x,y,direction,segments_num)
+    new = function (x,y,direction,segments_num)
         local instance = {
         x = x or 0,
         y = y or 0,
         direction = direction or 1,
         segments = {},
-        grow_segments = 0
+        grow_segments = 0,
+        bitmap = Bitmap.new("resources/snake-graphics.png", true)
         }
-        return setmetatable(instance,
-                {
-                    __index = Snake
-                })
+        setmetatable(instance, { __index = Snake })
 
         for i = 1, segments_num or 1 do
             local offset_x = (i - 1) * Snake.directions[direction][1]
@@ -176,11 +189,14 @@ local Snake = {
         end
     end,
 
-    draw = function (self, level)
+    draw = function (self)
         for _, segment in ipairs(self.segments) do
-            local left, top = TileManager.calculate_screen_position(segment.x, segment.y)
-            local source_rect = TileManager.calculate_source_rect(segment.tx, segment.ty)
-            draw_bitmap(nil, left, top, source_rect) -- `nil` as the texture is handled elsewhere
+            testing = tostring(TileManager)
+            local left, top = TileManager:get_screen_position(math.floor(segment.x), segment.y)
+            draw_string(testing, 200, 400)
+            local source_rect = TileManager:get_source_rect(segment.tx, segment.ty)
+            draw_bitmap(self.bitmap, left, top, source_rect[1], source_rect[2],
+            source_rect[1] + source_rect[3], source_rect[2] - source_rect[4]) -- `nil` as the texture is handled elsewhere
         end
     end
 }
