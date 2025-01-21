@@ -10,7 +10,7 @@ end
 local window_size = 500
 help = "nope"
 
-local snake = Snake.new(100,100,1,4,0)
+local snake = Snake.new(0,math.floor(window_size/2),math.floor(window_size/2))
 
 -- initialize items like window
 function initialize()
@@ -27,17 +27,19 @@ end
 
 function update()
     if(is_key_down('W')) then
-        playerPosY = playerPosY - 1
+        snake:change_direction(3)
     end
     if(is_key_down('S')) then
-        playerPosY = playerPosY + 1
+        snake:change_direction(2)
     end
     if(is_key_down('D')) then
-        playerPosX = playerPosX + 1
+        snake:change_direction(4)
     end
     if(is_key_down('A')) then
-        playerPosX = playerPosX - 1
+        snake:change_direction(1)
     end
+
+    snake:move()
 end
 
 bitmapTest = Bitmap.new("resources/snake-graphics.png", true)
