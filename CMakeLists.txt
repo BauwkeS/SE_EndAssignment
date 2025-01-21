@@ -14,7 +14,10 @@ project ("Lua_EndAssignment")
 LIST(APPEND LUA_SRC
 "game1.lua"
 "snake.lua"
-"resources/snake-graphics.png"
+"resources/snake_head.png"
+"resources/snake_tail.png"
+"resources/snake_body.png"
+"resources/apple.png"
 )
 
 # Add source to this project's executable.
