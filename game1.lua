@@ -19,6 +19,8 @@ function initialize()
     snake:init()
     snake:add_segment()
     snake:add_segment()
+    snake:add_segment()
+    snake:add_segment()
 end
 
 -- initialize game items before starting the game

@@ -11,28 +11,43 @@ local bitmap_file = {
     "resources/apple.png"
 }
 Tile ={
+    direction_map = {
+                -- When moving Right (R)
+                [4] = { [2] = 4, [3] = 1 },
+                -- When moving Left (L)
+                [1] = { [2] = 3, [3] = 0 },
+                -- When moving Down (D)
+                [2] = { [1] = 1, [4] = 0 },
+                -- When moving Up (U)
+                [3] = { [1] = 4, [4] = 3 }
+                }, -- my lookup table for the turns
+
     draw = function (self)
         --testing = tostring(self.source_x)
             draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, self.source_y,
             self.source_x + tile_size, self.source_y + tile_size)
         end,
 
-    update_direction = function (self, dir)
+    update_direction = function (self, dir, extra_dir)
         --if self.bitmap_info == string. "resources/snake_body.png" then
         --if (string.match(self.bitmap_info, "resources/snake_body.png")) then
         --testing = tostring(dir)
+
+        -- can be empty
+        extra_dir = extra_dir or 0
+
         dir = math.floor(dir)
+        extra_dir = math.floor(extra_dir)
         self.direction = dir
 
         if string.find(tostring(self.bitmap_info), "resources/snake_body.png") ~= nil then
-            if (dir ==1 ) then -- left
+            if (extra_dir > 0 ) then -- turns
+                local source_number = Tile.direction_map[extra_dir][dir]
+                self.source_x = tile_size * math.floor(source_number)
+            elseif (dir ==1 or dir ==4) then -- left
                 self.source_x = tile_size * 5
-            elseif (dir ==2 ) then -- down
+            elseif (dir ==2 or dir ==3 ) then -- down
                 self.source_x = tile_size * 2
-            elseif (dir ==3) then --up
-                self.source_x = tile_size * 2
-            elseif (dir ==4 ) then --right
-                self.source_x = tile_size * 5
             end
         else
             if (dir ==1 ) then -- left
@@ -108,6 +123,18 @@ Snake = {
             for i = #self.full_snake, 2, -1 do
                 self.full_snake[i].pos_x = self.full_snake[i - 1].pos_x
                 self.full_snake[i].pos_y = self.full_snake[i - 1].pos_y
+                
+                --also update direction
+                local current_dir = math.floor(self.full_snake[i].direction)
+                local prev_dir = math.floor(self.full_snake[i - 1].direction)
+
+                --testing = testing .. tostring(current_dir) .. " & " .. tostring(prev_dir) .. " | "
+                if current_dir ~= prev_dir then
+                    self.full_snake[i]:update_direction(prev_dir, current_dir)
+                else
+                    self.full_snake[i]:update_direction(prev_dir)
+                end
+
             end
 
             -- Move the head based on its direction
@@ -122,16 +149,16 @@ Snake = {
                 head.pos_x = head.pos_x + tile_size
             end
 
+            -- Also update the visuals
+            --self.change_direction(self.full_snake[1].direction)
+
             -- Reset the timer after moving
             self.move_timer = 0
         end
     end,
 
     change_direction = function (self, new_dir) -- pas down the needed directions
-        for i = #self.full_snake, 2, -1 do
-            self.full_snake[i].direction = self.full_snake[i - 1].direction
-        end
-        self.full_snake[1].direction = new_dir
+        self.full_snake[1]:update_direction(new_dir)
     end,
 
     draw = function (self)
