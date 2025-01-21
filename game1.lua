@@ -1,33 +1,73 @@
 
 --- Creates a COLORREF value from RGB components
-function RGB(r, g, b)
+local function RGB(r, g, b)
     return (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16)
 end
 
 --- |||||||||||||||||||
 
-local window_width = 800
-local window_height = 500
+local window_size = 500
+local help = "nope"
+local SnakeBody = {
+    -- Attributes
 
-local playerPosX = 400
-local playerPosY = 50
-local playerSize = 20
+    -- Methods 
+    move_body = function (self)
+        print("you should move now:D")
+    end,
 
-local font1 = Font.new("Freestyle Script",true,false,false,18)
-local cat_bitmap = Bitmap.new("resources/cat.png",true)
+    change_direction = function (self, direction)
+        print("aaaaaaaand TURN")
+    end,
+
+    set_position = function (self,x, y)
+        self.snake_pos_x = x
+        self.snake_pos_y = y
+    end,
+
+    draw_body = function (self)
+        help  = string.format("Drawing rect: left=%d, top=%d, right=%d, bottom=%d",
+        self.snake_pos_x,
+        self.snake_pos_y,
+        self.snake_pos_x + self.snake_size,
+        self.snake_pos_y - self.snake_size
+    )
+        fill_rect(math.floor(self.snake_pos_x),math.floor(self.snake_pos_y),
+        math.floor(self.snake_pos_x+self.snake_size),
+        math.floor(self.snake_pos_y-self.snake_size))
+    end
+}
 
 
+
+
+
+function SnakeBody.new(pos_in_snake)
+    local instance = {
+        snake_size = 20,
+        snake_pos_x = window_size/2, 
+        snake_pos_y = window_size / 2,
+        position_in_snake = pos_in_snake or 1}
+
+        return setmetatable(instance,
+        {
+            __index = SnakeBody
+        })
+end
+
+
+local snake1 = SnakeBody.new(1)
 
 -- initialize items like window
 function initialize()
-    set_window_title("Game 1 - testing scene")
-    set_window_size(window_width,window_height)
+    set_window_title("Game 1 - testing snake")
+    set_window_size(window_size,window_size)
 end
 
 -- initialize game items before starting the game
 function game_start()
 --set player stuff here if you need ad textures etc
----set_font(font1)
+
 end
 
 function update()
@@ -51,7 +91,8 @@ function draw()
 
     set_color(RGB(0,255,255))
     draw_string("hello there", 100, 200)
-
+    draw_string(help, 100, 400)
     set_color(RGB(255,255,255))
-    fill_rect(playerPosX,playerPosY,playerPosX+playerSize,playerPosY-playerSize)
+    snake1:draw_body()
+    
 end
