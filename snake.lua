@@ -19,8 +19,12 @@ Tile ={
                 -- When moving Down (D)
                 [2] = { [1] = 1, [4] = 0 },
                 -- When moving Up (U)
-                [3] = { [1] = 4, [4] = 3 }
-                }, -- my lookup table for the turns
+                [3] = { [1] = 4, [4] = 3 },
+                -- When not turning
+                [0] = { [1] = 5, [2] = 2, [3] = 2, [4] = 5 },
+                -- head and tail
+                [5] = { [1] = 0, [2] = 1, [3] = 2, [4] = 3 }
+                }, -- my lookup table for the snake pieces
 
     draw = function (self)
         --testing = tostring(self.source_x)
@@ -29,10 +33,6 @@ Tile ={
         end,
 
     update_direction = function (self, dir, extra_dir)
-        --if self.bitmap_info == string. "resources/snake_body.png" then
-        --if (string.match(self.bitmap_info, "resources/snake_body.png")) then
-        --testing = tostring(dir)
-
         -- can be empty
         extra_dir = extra_dir or 0
 
@@ -40,27 +40,12 @@ Tile ={
         extra_dir = math.floor(extra_dir)
         self.direction = dir
 
-        if string.find(tostring(self.bitmap_info), "resources/snake_body.png") ~= nil then
-            if (extra_dir > 0 ) then -- turns
-                local source_number = Tile.direction_map[extra_dir][dir]
-                self.source_x = tile_size * math.floor(source_number)
-            elseif (dir ==1 or dir ==4) then -- left
-                self.source_x = tile_size * 5
-            elseif (dir ==2 or dir ==3 ) then -- down
-                self.source_x = tile_size * 2
-            end
-        else
-            if (dir ==1 ) then -- left
-                self.source_x = 0
-            elseif (dir ==2 ) then -- down
-                self.source_x = tile_size 
-            elseif (dir ==3) then --up
-                self.source_x = tile_size * 2
-            elseif (dir ==4 ) then --right
-                self.source_x = tile_size * 3
-            end
+        if string.find(tostring(self.bitmap_info), "resources/snake_body.png") == nil then
+            extra_dir = 5 -- not a body
         end
 
+        local source_number = Tile.direction_map[extra_dir][dir]
+        self.source_x = tile_size * math.floor(source_number)
         
     end,
 
@@ -90,20 +75,21 @@ Tile ={
 
 Snake = {
     -- Attributes
-    move_interval = 15,
+    move_interval = 7,
     -- Methods
-    new = function (self, x,y)
+    new = function (self, window_size)
         --testing = tostring(bitmap_file[1])
         local instance = {
+            window_size = window_size,
             move_timer=0,
             segments_num= 2, -- you start with only a tail and head
             -- add head
-            head_tile = Tile:new(tostring(bitmap_file[1]),x,y),
+            head_tile = Tile:new(tostring(bitmap_file[1]),math.floor(window_size/2),math.floor(window_size/2)),
             -- add tail
-            tail_tile = Tile:new(tostring(bitmap_file[2]),x-tile_size,y),
+            tail_tile = Tile:new(tostring(bitmap_file[2]),math.floor(window_size/2)-tile_size,math.floor(window_size/2)),
 
             -- the full snake:
-            full_snake = {}
+            full_snake = {},
         }
 
         setmetatable(instance, { __index = Snake })
@@ -148,16 +134,21 @@ Snake = {
             elseif head.direction == 4 then -- right
                 head.pos_x = head.pos_x + tile_size
             end
-
-            -- Also update the visuals
-            --self.change_direction(self.full_snake[1].direction)
-
+            
             -- Reset the timer after moving
             self.move_timer = 0
+
+            -- collision check
+            if self:check_self_collision() or self:check_boundary_collision() then
+                return true --send back a signal to end the game
+            end
+
         end
+        return false
     end,
 
     change_direction = function (self, new_dir) -- pas down the needed directions
+        if self.full_snake[1].direction + new_dir ==5 then return end
         self.full_snake[1]:update_direction(new_dir)
     end,
 
@@ -205,4 +196,24 @@ Snake = {
         --last_x = self.segments[self.segments_num].pos_x
         --last_y = self.segments[self.segments_num].pos_y
     end,
+
+    check_self_collision = function(self)
+        local head = self.full_snake[1]
+        for i = 2, #self.full_snake do
+            local segment = self.full_snake[i]
+            if head.pos_x == segment.pos_x and head.pos_y == segment.pos_y then
+                return true -- snek hit
+            end
+        end
+        return false 
+    end,
+
+    check_boundary_collision = function(self)
+        local head = self.full_snake[1]
+        if head.pos_x < 0 or head.pos_x+tile_size >= self.window_size or
+            head.pos_y < 0 or head.pos_y+tile_size >= self.window_size then
+            return true -- window hit
+        end
+        return false
+    end
 }

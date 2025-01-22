@@ -18,6 +18,7 @@ LIST(APPEND LUA_SRC
 "resources/snake_tail.png"
 "resources/snake_body.png"
 "resources/apple.png"
+"resources/black_background.png"
 )
 
 # Add source to this project's executable.
