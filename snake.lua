@@ -1,13 +1,11 @@
 -- game variables
 local GAME_SIZE = 500
-local testing = "hell nah"
 local tile_size = 16
 
 Pickup = {
     -- Attributes
     -- Methods
     new = function (self)
-        --testing = tostring(bitmap_file[1])
         local max_size = math.floor(WINDOW_SIZE/tile_size)
         local instance = {
             pos_x = math.floor(math.random(max_size-1) * tile_size),
@@ -22,7 +20,6 @@ Pickup = {
     end,
 
     draw = function (self)
-        testing = tostring(self.apple_bitmap) .. " pos: " .. self.pos_x .. ", " .. self.pos_y
         draw_bitmap(self.apple_bitmap, self.pos_x, self.pos_y)
         end,
 }
@@ -49,7 +46,6 @@ Tile ={
                 }, -- my lookup table for the snake pieces
 
     draw = function (self)
-        --testing = tostring(self.source_x)
             draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, 0,
             self.source_x + tile_size, tile_size)
         end,
@@ -71,23 +67,22 @@ Tile ={
         
     end,
 
-    new = function (self,bitmap_info, pos_x, pos_y)      
+    new = function (self,bitmap_info)      
         local instance = {
         direction = 4,
         source_x = 0,
-        pos_x = pos_x or 0,
-        pos_y = pos_y or 0,
+        pos_x = 0,
+        pos_y = 0,
         bitmap_info = bitmap_info,
         bitmap = Bitmap.new(tostring(bitmap_info), true)
         }
-        --testing = "hopefully made a new tile"
         setmetatable(instance, { __index = Tile })
         return instance
     end,
 
     change_pos = function (self, new_x, new_y)
-        self.pos_x = new_x
-        self.pos.y = new_y
+        self.pos_x = math.floor(new_x)
+        self.pos_y = math.floor(new_y)
     end
 }
 
@@ -99,26 +94,19 @@ Snake = {
     move_interval = 7,
     -- Methods
     new = function (self)
-        --testing = tostring(bitmap_file[1])
         local instance = {
             move_timer=0,
-            segments_num= 2, -- you start with only a tail and head
+
             -- add head
-            head_tile = Tile:new(tostring(bitmap_file[1]),
-            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size),
-            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size)),
+            head_tile = Tile:new(tostring(bitmap_file[1])),
             -- add tail
-            tail_tile = Tile:new(tostring(bitmap_file[2]),
-            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size) - tile_size,
-            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size)),
+            tail_tile = Tile:new(tostring(bitmap_file[2])),
 
             -- the full snake:
             full_snake = {},
         }
 
         setmetatable(instance, { __index = Snake })
-        --testing = tostring(bitmap_file[1])
-
         return instance
     end,
 
@@ -138,7 +126,6 @@ Snake = {
                 local current_dir = math.floor(self.full_snake[i].direction)
                 local prev_dir = math.floor(self.full_snake[i - 1].direction)
 
-                --testing = testing .. tostring(current_dir) .. " & " .. tostring(prev_dir) .. " | "
                 if current_dir ~= prev_dir then
                     self.full_snake[i]:update_direction(prev_dir, current_dir)
                 else
@@ -177,15 +164,16 @@ Snake = {
     end,
 
     draw = function (self)
-        draw_string(testing,0,300)
         for _, snake_part in ipairs(self.full_snake) do
             snake_part:draw()
         end
     end,
 
     init = function (self)
-        --testing = "self.direction: " .. tostring(self.direction)
         local first_dir = 4
+        local start_pos = math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size)
+        self.head_tile:change_pos(start_pos, start_pos)
+        self.tail_tile:change_pos(start_pos- tile_size, start_pos)
         self.head_tile:update_direction(first_dir)
         self.tail_tile:update_direction(first_dir)
 
@@ -196,9 +184,10 @@ Snake = {
 
     add_segment = function (self)
         -- shift the tail when you add new segment
-        local old_tail = table.remove(self.full_snake, math.floor(self.segments_num))
+        local old_tail = table.remove(self.full_snake, math.floor(#self.full_snake))
         
-        local new_tile = Tile:new(tostring(bitmap_file[3]),old_tail.pos_x,old_tail.pos_y)
+        local new_tile = Tile:new(tostring(bitmap_file[3]))
+        new_tile:change_pos(old_tail.pos_x,old_tail.pos_y)
         new_tile:update_direction(old_tail.direction)
 
         table.insert(self.full_snake, new_tile)
@@ -214,11 +203,6 @@ Snake = {
         end
         
         table.insert(self.full_snake, old_tail)
-        --testing = tostring(#self.full_snake)
-        
-        self.segments_num = self.segments_num +1
-        --last_x = self.segments[self.segments_num].pos_x
-        --last_y = self.segments[self.segments_num].pos_y
     end,
 
     check_self_collision = function(self)
@@ -243,10 +227,6 @@ Snake = {
 
     check_other_collision = function(self, apple)
         local head = self.full_snake[1]        
-        testing = "x left: " .. head.pos_x .. " > " .. tostring(apple.pos_x - tile_size)  .. " | "..
-                "x right: " .. head.pos_x .. " <= " .. tostring(apple.pos_x) .. " | " ..
-                "y top: " .. head.pos_y .. " > " .. tostring(apple.pos_y - tile_size) .. " | " ..
-                "y top: " .. head.pos_y .. " <= " .. tostring(apple.pos_y) 
         if head.pos_x > apple.pos_x-tile_size and head.pos_x <= apple.pos_x and
             head.pos_y > apple.pos_y-tile_size and head.pos_y <= apple.pos_y then
             return true -- apple hit
