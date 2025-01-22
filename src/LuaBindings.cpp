@@ -101,7 +101,7 @@ void LuaBindings::BindEngine(GameEngine* pGameEngine)
 
 void LuaBindings::BindDraw(GameEngine* pGameEngine)
 {
-
+	//game engine draw functions
 	m_LuaState.set_function("set_color", [pGameEngine](const COLORREF& color)
 		{
 			pGameEngine->SetColor(color);

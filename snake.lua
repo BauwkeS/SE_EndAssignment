@@ -2,7 +2,6 @@
 local tile_size = 16
 local score_font = Font.new("Garamond",false,false,false,18)
 
-
 Pickup = {
     -- Attributes
     -- Methods
@@ -42,9 +41,9 @@ Tile ={
                 [3] = { [1] = 4, [4] = 3 },
                 -- When not turning
                 [0] = { [1] = 5, [2] = 2, [3] = 2, [4] = 5 },
-                -- head and tail
+                -- Head and tail
                 [5] = { [1] = 0, [2] = 1, [3] = 2, [4] = 3 }
-                }, -- my lookup table for the snake pieces
+                }, -- My lookup table for the snake pieces
 
     draw = function (self)
             draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, 0,
@@ -88,15 +87,14 @@ Tile ={
 }
 
 -- Snake class
--- uses segment class as parts 
 
 Snake = {
     -- Attributes
-    move_interval = 7,
+    move_interval = 7, --  to delay snake and make it step in parts
     -- Methods
     new = function (self)
         local instance = {
-            move_timer=0,
+            move_timer=0, -- timer for the interval
 
             -- add head
             head_tile = Tile:new(tostring(bitmap_file[1])),
@@ -115,7 +113,7 @@ Snake = {
 
         self.move_timer = self.move_timer + 1
 
-        -- Only move if the timer reaches the move interval
+        -- only move if the timer reaches the move interval
         if self.move_timer > self.move_interval then
             
             -- move each part of the snake starting from the tail
@@ -135,7 +133,7 @@ Snake = {
 
             end
 
-            -- Move the head based on its direction
+            -- move the head based on its direction
             local head = self.full_snake[1]
             if head.direction == 1 then -- left
                 head.pos_x = head.pos_x - tile_size
@@ -147,7 +145,7 @@ Snake = {
                 head.pos_x = head.pos_x + tile_size
             end
             
-            -- Reset the timer after moving
+            -- reset the timer after done moving
             self.move_timer = 0
 
             -- collision check
@@ -156,7 +154,7 @@ Snake = {
             end
 
         end
-        return false
+        return false -- keep playing
     end,
 
     change_direction = function (self, new_dir) -- pas down the needed directions
@@ -168,7 +166,7 @@ Snake = {
         for _, snake_part in ipairs(self.full_snake) do
             snake_part:draw()
         end
-        -- draw score => == added snake size
+        -- draw score => == added snake size beyond your head and tail
         local offset_text = 30
         local score = #self.full_snake - 2
         set_font(score_font)
@@ -196,7 +194,7 @@ Snake = {
         new_tile:change_pos(old_tail.pos_x,old_tail.pos_y)
         new_tile:update_direction(old_tail.direction)
 
-        table.insert(self.full_snake, new_tile)
+        table.insert(self.full_snake, new_tile) -- add new snake part where tail was
         
         if (old_tail.direction ==1 ) then -- left
             old_tail.pos_x = old_tail.pos_x + tile_size
@@ -208,7 +206,7 @@ Snake = {
             old_tail.pos_x = old_tail.pos_x - tile_size
         end
         
-        table.insert(self.full_snake, old_tail)
+        table.insert(self.full_snake, old_tail) -- add tail again on new pos
     end,
 
     check_self_collision = function(self)

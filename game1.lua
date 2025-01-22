@@ -21,17 +21,11 @@ screen_background:set_opacity(50)
 local main_font = Font.new("Garamond",true,false,false,36)
 local sub_font = Font.new("Garamond",false,false,false,28)
 
--- initialize items like window
+-- initialize game items
 function initialize()
     set_window_title("- Snek -")
     set_window_size(WINDOW_SIZE,WINDOW_SIZE)
     snake:init()
-end
-
--- initialize game items before starting the game
-function game_start()
---set player stuff here if you need ad textures etc
-
 end
 
 local function snake_apple_collision()
@@ -106,7 +100,7 @@ end
 function draw()
     fill_window_rect(RGB(0,0,0)) --fill background first
 
-    set_color(RGB(255,255,255))
+    set_color(RGB(255,255,255)) -- I want everything to set white on the black
     snake:draw()
     apple_pic:draw()
 
