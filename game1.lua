@@ -7,12 +7,14 @@ end
 
 --- |||||||||||||||||||
 
-local window_size = 700
-local end_game = false
+WINDOW_SIZE = 500
 
-local snake = Snake.new(0,math.floor(window_size))
+-- game stuff
+local snake = Snake.new(0)
+local apple_pic = Pickup.new(0)
 
 -- end game stuff 
+local end_game = false
 local end_background = Bitmap.new("resources/black_background.png", true)
 end_background:set_opacity(50)
 local end_font = Font.new("Garamond",true,false,false,36)
@@ -20,23 +22,8 @@ local end_font = Font.new("Garamond",true,false,false,36)
 -- initialize items like window
 function initialize()
     set_window_title("Game 1 - testing snake")
-    set_window_size(window_size,window_size)
+    set_window_size(WINDOW_SIZE,WINDOW_SIZE)
     snake:init()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
-    snake:add_segment()
 end
 
 -- initialize game items before starting the game
@@ -50,6 +37,12 @@ local function end_game_items()
     set_font(end_font)
 end
 
+local function snake_apple_collision()
+    if snake:check_other_collision(apple_pic) == true then
+        snake:add_segment()
+        apple_pic = Pickup.new(0)
+    end
+end
 
 function update()
     if(end_game == false) then
@@ -69,6 +62,7 @@ function update()
         if(snake:move()) then
             end_game_items()
         end
+        snake_apple_collision()
     else
         if(is_key_down('Q')) then
             quit()
@@ -82,6 +76,7 @@ function draw()
 
     set_color(RGB(255,255,255))
     snake:draw()
+    apple_pic:draw()
 
     if (end_game) then
         draw_bitmap(end_background, 0,0)

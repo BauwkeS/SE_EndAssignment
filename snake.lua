@@ -2,13 +2,35 @@
 local GAME_SIZE = 500
 local testing = "hell nah"
 local tile_size = 16
--- make a mapping for the picture
--- first number is for the x value and second for y 
+
+Pickup = {
+    -- Attributes
+    -- Methods
+    new = function (self)
+        --testing = tostring(bitmap_file[1])
+        local max_size = math.floor(WINDOW_SIZE/tile_size)
+        local instance = {
+            pos_x = math.floor(math.random(max_size-1) * tile_size),
+            pos_y = math.floor(math.random(max_size-1) * tile_size),
+            -- add head
+            apple_bitmap = Bitmap.new("resources/apple.png", true),
+        }
+
+        setmetatable(instance, { __index = Pickup })
+
+        return instance
+    end,
+
+    draw = function (self)
+        testing = tostring(self.apple_bitmap) .. " pos: " .. self.pos_x .. ", " .. self.pos_y
+        draw_bitmap(self.apple_bitmap, self.pos_x, self.pos_y)
+        end,
+}
+
 local bitmap_file = {
     "resources/snake_head.png",
     "resources/snake_tail.png",
     "resources/snake_body.png",
-    "resources/apple.png"
 }
 Tile ={
     direction_map = {
@@ -28,8 +50,8 @@ Tile ={
 
     draw = function (self)
         --testing = tostring(self.source_x)
-            draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, self.source_y,
-            self.source_x + tile_size, self.source_y + tile_size)
+            draw_bitmap(self.bitmap, self.pos_x, self.pos_y, self.source_x, 0,
+            self.source_x + tile_size, tile_size)
         end,
 
     update_direction = function (self, dir, extra_dir)
@@ -53,7 +75,6 @@ Tile ={
         local instance = {
         direction = 4,
         source_x = 0,
-        source_y = 0,
         pos_x = pos_x or 0,
         pos_y = pos_y or 0,
         bitmap_info = bitmap_info,
@@ -77,16 +98,19 @@ Snake = {
     -- Attributes
     move_interval = 7,
     -- Methods
-    new = function (self, window_size)
+    new = function (self)
         --testing = tostring(bitmap_file[1])
         local instance = {
-            window_size = window_size,
             move_timer=0,
             segments_num= 2, -- you start with only a tail and head
             -- add head
-            head_tile = Tile:new(tostring(bitmap_file[1]),math.floor(window_size/2),math.floor(window_size/2)),
+            head_tile = Tile:new(tostring(bitmap_file[1]),
+            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size),
+            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size)),
             -- add tail
-            tail_tile = Tile:new(tostring(bitmap_file[2]),math.floor(window_size/2)-tile_size,math.floor(window_size/2)),
+            tail_tile = Tile:new(tostring(bitmap_file[2]),
+            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size) - tile_size,
+            math.floor(math.floor(math.floor(WINDOW_SIZE/tile_size) /2) * tile_size)),
 
             -- the full snake:
             full_snake = {},
@@ -153,7 +177,7 @@ Snake = {
     end,
 
     draw = function (self)
-        draw_string(testing,300,300)
+        draw_string(testing,0,300)
         for _, snake_part in ipairs(self.full_snake) do
             snake_part:draw()
         end
@@ -210,9 +234,22 @@ Snake = {
 
     check_boundary_collision = function(self)
         local head = self.full_snake[1]
-        if head.pos_x < 0 or head.pos_x+tile_size >= self.window_size or
-            head.pos_y < 0 or head.pos_y+tile_size >= self.window_size then
+        if head.pos_x < 0 or head.pos_x+tile_size >= WINDOW_SIZE or
+            head.pos_y < 0 or head.pos_y+tile_size >= WINDOW_SIZE then
             return true -- window hit
+        end
+        return false
+    end,
+
+    check_other_collision = function(self, apple)
+        local head = self.full_snake[1]        
+        testing = "x left: " .. head.pos_x .. " > " .. tostring(apple.pos_x - tile_size)  .. " | "..
+                "x right: " .. head.pos_x .. " <= " .. tostring(apple.pos_x) .. " | " ..
+                "y top: " .. head.pos_y .. " > " .. tostring(apple.pos_y - tile_size) .. " | " ..
+                "y top: " .. head.pos_y .. " <= " .. tostring(apple.pos_y) 
+        if head.pos_x > apple.pos_x-tile_size and head.pos_x <= apple.pos_x and
+            head.pos_y > apple.pos_y-tile_size and head.pos_y <= apple.pos_y then
+            return true -- apple hit
         end
         return false
     end
