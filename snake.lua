@@ -1,6 +1,7 @@
 -- game variables
-local GAME_SIZE = 500
 local tile_size = 16
+local score_font = Font.new("Garamond",false,false,false,18)
+
 
 Pickup = {
     -- Attributes
@@ -167,6 +168,11 @@ Snake = {
         for _, snake_part in ipairs(self.full_snake) do
             snake_part:draw()
         end
+        -- draw score => == added snake size
+        local offset_text = 30
+        local score = #self.full_snake - 2
+        set_font(score_font)
+        draw_string("Score: " .. tostring(score), offset_text, math.floor(WINDOW_SIZE-offset_text))
     end,
 
     init = function (self)
